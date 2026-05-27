@@ -43,24 +43,26 @@
         </div>
 
 
-        <div class="contact-container contact_card">
-            <div class="working-hours">
-                <h4>Часы приема:</h4>
-                <p><strong>с 08:00 до 22:00 в будни,</strong></p>
-                <p><strong>с 08:00 до 21:00 в выходные</strong></p>
-                <hr>
-                <p><strong>Анализы принимаются:</strong></p>
-                <p><strong>с 07:30 до 22:00 в будни</strong></p>
-                <p><strong>с 07:30 до 21:00 в выходные</strong></p>
-                <!-- <p>Our Support Team is available 24/7</p> -->
-            </div>
-            <div class="contact-us">
-                <h4>Контакты для связи</h4>
-                <hr>
-                <p><strong>020 7993 2905</strong></p>
-                <p><a href="mailto:hello@finsweet.com">clinik_MH@finsweet.com</a></p>
-            </div>
-        </div>
+        <div class="form-container contact_card">
+    <form class="contact-form" action="https://formsubmit.co/ВАША_ПОЧТА@example.com" method="POST">
+        <!-- Скрытые поля для настройки FormSubmit (необязательно) -->
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_subject" value="Новая заявка с сайта Клиника MH">
+
+        <input type="text" name="fullname" placeholder="Полное имя" required>
+        <input type="email" name="email" placeholder="Ваша почта" required>
+        <input list="options" type="text" name="age" placeholder="Возраст" required>
+        <datalist id="options">
+            <option value="0-4 годов">
+            <option value="5-10 лет">
+            <option value="11-18 лет">
+            <option value="18 и больше лет">
+        </datalist>
+        <textarea name="message" placeholder="Вопрос и когда с Вами связаться" rows="4" required></textarea>
+        <button type="submit">Отправить</button>
+    </form>
+</div>
 
         <div class="form-container contact_card">
             <form class="contact-form">
