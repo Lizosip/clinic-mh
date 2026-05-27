@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="contact.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <!-- Логотип -->
+            <div class="logo">
+                <a href="#">Finsweet</a>
+            </div>
+    
+            <!-- Меню навигации -->
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li><a href="#" onclick="window.location.href='index.html'">Главная</a></li>
+                    <li><a href="#" onclick="window.location.href='blog.html'">Услуги</a></li>
+                    <li><a href="#" onclick="window.location.href='contact.html'">Контакты</a></li>
+                </ul>
+            </nav>
+    
+            <!-- Кнопка Subscribe -->
+            <a href="#" class="subscribe-btn" onclick="window.location.href='contact.html'">Записаться</a>
+        </div>
+    </header>
+
+
+    <section class="contact_section">
+
+        <div class="text_content contact_card">
+            <h4 class="title_text">свяжитесь с нами</h4>
+            <h3 class="text_card">
+                Будем рады помочь!
+            </h3>
+            <p class="description text_card">Наша служба поддержки работает круглосуточно. Ожидание ответа состовляет 15 минут, после чего с Вами свяжется оператор.</p>
+        </div>
+
+
+        <div class="contact-container contact_card">
+            <div class="working-hours">
+                <h4>Часы приема:</h4>
+                <p><strong>с 08:00 до 22:00 в будни,</strong></p>
+                <p><strong>с 08:00 до 21:00 в выходные</strong></p>
+                <hr>
+                <p><strong>Анализы принимаются:</strong></p>
+                <p><strong>с 07:30 до 22:00 в будни</strong></p>
+                <p><strong>с 07:30 до 21:00 в выходные</strong></p>
+                <!-- <p>Our Support Team is available 24/7</p> -->
+            </div>
+            <div class="contact-us">
+                <h4>Контакты для связи</h4>
+                <hr>
+                <p><strong>020 7993 2905</strong></p>
+                <p><a href="mailto:hello@finsweet.com">clinik_MH@finsweet.com</a></p>
+            </div>
+        </div>
+
+        <div class="form-container contact_card">
+            <form class="contact-form">
+                <input type="text" name="fullname" placeholder="Полное имя" required>
+                <input type="email" name="email" placeholder="Ваша почта" required>
+                <input list="options" type="text" id="input-with-options" name="query" placeholder="Возраст" required>
+                <datalist id="options">
+                  <option value="0-4 годов">
+                  <option value="5-10 лет">
+                  <option value="11-18 лет">
+                  <option value="18 и больше лет">
+                </datalist>
+                <textarea name="message" placeholder="Вопрос и когда с Вами связаться" rows="4" required></textarea>
+                <button type="submit">Отправить</button>
+            </form>
+        </div>
+
+    </section>
+
+
+
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <!-- Логотип -->
+            <div class="logo">
+                <a href="#">Клиника MH</a>
+            </div>
+    
+            <!-- Меню навигации -->
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li><a href="#" onclick="window.location.href='index.html'">Главная</a></li>
+                    <li><a href="#" onclick="window.location.href='blog.html'">Услуги</a></li>
+                    <li><a href="#" onclick="window.location.href='contact.html'">Контакты</a></li>
+                    <li><a href="#" onclick="window.location.href='privacy.html'">Документация</a></li>
+                </ul>
+            </nav>
+            
+        </div>
+        <!-- Блок подписки -->
+        <div class="footer2-subscribe">
+            <p class="footer2-subscribe-text">Оставьте свои данные для обратной связи по любому вопросу</p>
+            <form class="footer2-subscribe-form">
+                <input type="email" placeholder="Enter Your Email" required>
+                <button type="submit">Отправить</button>
+            </form>
+        </div>
+
+        <!-- Нижняя часть футера -->
+        <div class="footer2-bottom">
+            <div class="footer2-info">
+                Савульский переулок д.10<br>
+                clinik_MH@finsweet.com 020 7993 2905
+            </div>
+            <div class="footer2-socials">
+                <a href="#"><img src="photo/social/Negative.png" alt="Facebook"></a>
+                <a href="#"><img src="photo/social/Negative_2.png" alt="Twitter"></a>
+                <a href="#"><img src="photo/social/Negative_3.png" alt="Instagram"></a>
+                <a href="#"><img src="photo/social/Vector.png" alt="LinkedIn"></a>
+            </div>
+        </div>
+    </header>
+    
+</body>
+</html>

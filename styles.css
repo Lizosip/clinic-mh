@@ -1,0 +1,201 @@
+
+
+/* Общие стили футера */
+.footer2 {
+    background-color: #1f1f2e;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    padding: 40px 20px;
+}
+
+.footer2-container {
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+/* Верхняя часть футера */
+.footer2-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.footer2-logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.footer2-nav a {
+    color: #ffffff;
+    text-decoration: none;
+    margin-left: 20px;
+    font-size: 14px;
+}
+
+.footer2-nav a:hover {
+    text-decoration: underline;
+}
+
+/* Блок подписки */
+.footer2-subscribe {
+    background-color: #2b2b3c;
+    padding: 30px;
+    width: 85%;
+    position: relative;
+    left: 7%;
+    border-radius: 8px;
+    margin-bottom: 40px;
+    margin-top: 30px;
+    text-align: center;
+}
+
+.footer2-subscribe-text {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+.footer2-subscribe-form {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.footer2-subscribe-form input {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    width: 250px;
+    font-size: 14px;
+    background-color: #1f1f2e;
+}
+
+.footer2-subscribe-form button {
+    background-color: #f8c145;
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #1f1f2e;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.footer2-subscribe-form button:hover {
+    background-color: #d4a537;
+}
+
+/* Нижняя часть футера */
+.footer2-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    margin-right: 100px;
+    margin-left: 88px;
+}
+
+.footer2-info {
+    line-height: 1.6;
+    color: #bbbbbb;
+}
+
+.footer2-socials a {
+    margin-left: 10px;
+    display: inline-block;
+}
+
+.footer2-socials img {
+    width: 20px;
+    height: 20px;
+    filter: brightness(0) invert(1);
+    transition: filter 0.3s;
+}
+
+.footer2-socials img:hover {
+    filter: brightness(0.8) invert(0.8);
+}
+
+
+
+
+
+
+
+
+
+
+
+/* Стили для хедера */
+.header {
+    background-color: var(--primary-dark); /* Тёмный фон */
+    color: var(--text-light); /* Белый текст */
+    padding: 16px 0;
+}
+
+.header .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Логотип слева, остальное справа */
+    padding: 0 24px;
+}
+
+/* Логотип */
+.header .logo a {
+    font-size: 24px;
+    font-weight: bold;
+    text-decoration: none;
+    color: var(--text-light);
+}
+
+/* Навигация */
+.nav {
+    margin-left: auto; /* Сдвигаем навигацию вправо */
+    margin-right: 24px; /* Расстояние между меню и кнопкой */
+}
+
+.nav-list {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-list li {
+    margin-left: 24px;
+}
+
+.nav-list li:first-child {
+    margin-left: 0;
+}
+
+.nav-list a {
+    text-decoration: none;
+    color: var(--text-light);
+    font-size: 16px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-list a:hover {
+    color: var(--primary-yellow); /* Акцент на ссылках при наведении */
+}
+
+/* Кнопка Subscribe */
+.subscribe-btn {
+    padding: 8px 16px;
+    background-color: var(--primary-yellow); /* Жёлтый фон */
+    color: var(--primary-dark); /* Тёмный текст */
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.subscribe-btn:hover {
+    background-color: #dba637; /* Более тёмный жёлтый при наведении */
+}

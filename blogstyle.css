@@ -1,0 +1,185 @@
+/* Общие стили */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f9f9f9;
+}
+
+:root {
+    --primary-yellow: #F9C94C;
+    --primary-dark: #22202E;
+    --text-light: #FFFFFF;
+    --text-gray: #6F6F6F;
+}
+
+
+/* Hero */
+.hero_2 {
+    position: relative;
+    /* background-image: url('pexels-photo-3772622.webp');  */
+    background-color: #F4F0F8;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    text-decoration-color: #22202E;
+    padding: 120px 24px;
+    height: 100vh; /* Полная высота экрана */
+    display: flex;
+    align-items: center;
+}
+
+.card_2{
+    width: 50%;
+    padding: 10px;
+}
+
+.hero-title_2 {
+    font-size: 48px;
+    line-height: 56px;
+    font-weight: bold;
+    text-align: left;
+    color: #22202E;
+}
+
+
+
+/* Главная страница */
+.main-page {
+    text-align: center;
+    padding: 50px;
+}
+
+.main-page h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.navigate-btn {
+    background-color: #6c63ff;
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.navigate-btn:hover {
+    background-color: #5751d7;
+}
+
+/* Блоги */
+.blogs-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    display: grid; 
+    grid-template-columns: 1fr;
+    margin: 30px;
+}
+
+.cards{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.blog-card {
+    display: flex;
+    width: 90%;
+    justify-content: center; /* Центрируем по горизонтали */
+    align-items: center;
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.blog-card img {
+    width: 40%;
+    height: auto;
+    object-fit: cover;
+}
+
+.blog-content {
+    padding: 20px;
+    text-align: left;
+    width: 60%;
+}
+
+.category {
+    color: #6c63ff;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+
+.blog-content h2 {
+    font-size: 32px;
+    font-weight: bold;
+    margin: 10px 0;
+    color: #22202E;
+}
+
+.blog-content p {
+    font-size: 0.9rem;
+    color: #666;
+    line-height: 1.4;
+}
+
+
+.text{
+    margin: 0 0 0 60px;
+}
+
+.text-with-line {
+    display: inline-block; /* Чтобы линия была только под текстом */
+    position: relative; /* Для позиционирования полоски */
+    font-size: 32px;
+    font-weight: bold;
+    line-height: 64px;
+    color: #22202E; /* Цвет текста */
+    margin: 0 0 30px 0px;
+  }
+  
+  .text-with-line::after {
+    content: ""; /* Создаём декоративный элемент */
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%; /* Полоска занимает всю ширину текста */
+    height: 1px; /* Толщина полоски */
+    background-color: #ccc; /* Цвет полоски */  
+  }
+  
+  
+.just_text_box_in_blog{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 75vh;
+    margin: 0;
+}  
+
+
+.text_content{
+    width: 414px;
+    height: 256px;
+    font-size: 48px;
+    line-height: 56px;
+    text-align: center;
+    line-height: 20px;
+    color: #22202E;
+}
+
+.description{
+    color: #666;
+    margin: 20px 0 20px 0;
+}
+
+

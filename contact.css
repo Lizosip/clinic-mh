@@ -1,0 +1,128 @@
+
+.contact_section{
+    width: 100%;
+    /* height: 100vh; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 30px;
+    /* margin-top: 50px;
+    margin-bottom: 50px; */
+    padding: 30px 0 50px 0;
+}
+
+
+.contact-container {
+    display: flex;
+    justify-content: space-between;
+    background-color: #4a3e64; 
+    padding: 40px;
+    width: 55%;
+    justify-content: center;
+
+}
+
+.working-hours, .contact-us {
+    flex: 1;
+    margin: 0 10px;
+    text-align: left;
+}
+
+h4 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: lighter;
+    color: #e7e5e5; /* Light purple text for headers */
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #bbbbbb;
+    margin: 10px 0;
+}
+
+p {
+    color: #e7e5e5;
+    margin: 5px 0;
+}
+
+p a {
+    color: #e7e5e5;
+    text-decoration: none;
+}
+
+p a:hover {
+    text-decoration: underline;
+}
+
+strong {
+    color: #ffffff;
+    font-weight: bold;
+}
+
+/*//////////*/
+
+
+.form-container {
+    width: 80%;
+    max-width: 700px;
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #4a4a4a;
+    background-color: #ffffff;
+    color: #000;
+}
+
+.contact-form input::placeholder,
+.contact-form textarea::placeholder {
+    color: #000;
+}
+
+.contact-form button {
+    background-color: #fdd835; /* Yellow background for button */
+    color: #000;
+    font-size: 1rem;
+    padding: 10px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.contact-form button:hover {
+    background-color: #e5c027; /* Slightly darker yellow on hover */
+}
+
+/*////////////*/
+
+.title_text{
+    color: #22202E;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.text_content{
+    width: 55%;
+    height: 176px;
+    font-size: 48px;
+    line-height: 56px;
+    text-align: center;
+    line-height: 20px;
+    color: #22202E;
+}
+
+.description{
+    color: #666;
+    margin: 20px 0 20px 0;
+}
