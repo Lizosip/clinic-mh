@@ -44,25 +44,61 @@
 
 
         <div class="form-container contact_card">
-    <form class="contact-form" action="https://formsubmit.co/liza20070104@gmail.com" method="POST">
-        <!-- Скрытые поля для настройки FormSubmit (необязательно) -->
-        <input type="hidden" name="_captcha" value="false">
-        <input type="hidden" name="_template" value="table">
-        <input type="hidden" name="_subject" value="Новая заявка с сайта Клиника MH">
-
-        <input type="text" name="fullname" placeholder="Полное имя" required>
-        <input type="email" name="email" placeholder="Ваша почта" required>
-        <input list="options" type="text" name="age" placeholder="Возраст" required>
+    <form id="contactForm" class="contact-form">
+        <input type="text" name="fullname" id="fullname" placeholder="Полное имя" required>
+        <input type="email" name="email" id="email" placeholder="Ваша почта" required>
+        <input list="options" type="text" name="age" id="age" placeholder="Возраст" required>
         <datalist id="options">
             <option value="0-4 годов">
             <option value="5-10 лет">
             <option value="11-18 лет">
             <option value="18 и больше лет">
         </datalist>
-        <textarea name="message" placeholder="Вопрос и когда с Вами связаться" rows="4" required></textarea>
+        <textarea name="message" id="message" placeholder="Вопрос и когда с Вами связаться" rows="4" required></textarea>
         <button type="submit">Отправить</button>
     </form>
+    <div id="formStatus" style="margin-top: 15px; text-align: center; display: none;"></div>
 </div>
+
+<!-- Подключаем EmailJS SDK -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script type="text/javascript">
+    (function() {
+        // Инициализация EmailJS с вашим Public Key (User ID)
+        emailjs.init("ВАШ_PUBLIC_KEY");  // Замените на реальный ключ
+    })();
+
+    document.getElementById('contactForm').addEventListener('submit', function(event) {
+        event.preventDefault();  // Отменяем стандартную отправку
+
+        // Показываем сообщение "Отправка..."
+        const statusDiv = document.getElementById('formStatus');
+        statusDiv.style.display = 'block';
+        statusDiv.innerHTML = 'Отправка...';
+        statusDiv.style.color = '#222';
+
+        // Собираем данные из формы
+        const templateParams = {
+            fullname: document.getElementById('fullname').value,
+            email: document.getElementById('email').value,
+            age: document.getElementById('age').value,
+            message: document.getElementById('message').value
+        };
+
+        // Отправляем через EmailJS
+        emailjs.send('ВАШ_SERVICE_ID', 'ВАШ_TEMPLATE_ID', templateParams)
+            .then(function(response) {
+                statusDiv.innerHTML = '✅ Сообщение отправлено! Мы свяжемся с вами в ближайшее время.';
+                statusDiv.style.color = 'green';
+                document.getElementById('contactForm').reset();  // очищаем форму
+                setTimeout(() => { statusDiv.style.display = 'none'; }, 5000);
+            }, function(error) {
+                statusDiv.innerHTML = '❌ Ошибка при отправке. Попробуйте позже или напишите напрямую на почту.';
+                statusDiv.style.color = 'red';
+                console.error('EmailJS error:', error);
+            });
+    });
+</script>
 
     </section>
 
