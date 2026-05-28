@@ -65,7 +65,7 @@
 <script type="text/javascript">
     (function() {
         // Инициализация EmailJS с вашим Public Key (User ID)
-        emailjs.init("ВАШ_PUBLIC_KEY");  // Замените на реальный ключ
+        emailjs.init("pLk8dDMxLCUIVbfzP");  // Замените на реальный ключ
     })();
 
     document.getElementById('contactForm').addEventListener('submit', function(event) {
@@ -86,7 +86,7 @@
         };
 
         // Отправляем через EmailJS
-        emailjs.send('ВАШ_SERVICE_ID', 'ВАШ_TEMPLATE_ID', templateParams)
+        emailjs.send('service_g6lpa5c', 'template_7909y7b', templateParams)
             .then(function(response) {
                 statusDiv.innerHTML = '✅ Сообщение отправлено! Мы свяжемся с вами в ближайшее время.';
                 statusDiv.style.color = 'green';
