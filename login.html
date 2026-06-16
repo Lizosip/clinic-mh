@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход / Регистрация</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="login.css"> <!-- новый файл для стилей этой страницы -->
+</head>
+<body>
+    <!-- Хедер -->
+    <header class="header">
+        <div class="container">
+            <div class="logo"><a href="index.html">Клиника MH</a></div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li><a href="index.html">Главная</a></li>
+                    <li><a href="blog.html">Услуги</a></li>
+                    <li><a href="contact.html">Контакты</a></li>
+                    <li><a href="privacy.html">Документация</a></li>
+                </ul>
+            </nav>
+            <a href="login.html" class="subscribe-btn">Войти</a>
+        </div>
+    </header>
+
+    <section class="login-section">
+        <div class="login-container">
+            <h2 id="formTitle">Войти в аккаунт</h2>
+            <form id="authForm">
+                <div class="form-group">
+                    <input type="email" id="email" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" placeholder="Пароль" required>
+                </div>
+                <!-- Для регистрации показываем дополнительные поля -->
+                <div id="registerFields" style="display:none;">
+                    <div class="form-group">
+                        <input type="text" id="fullName" placeholder="Ваше полное имя (для врача — ФИО)">
+                    </div>
+                    <div class="form-group">
+                        <select id="roleSelect">
+                            <option value="client">Клиент</option>
+                            <option value="doctor">Врач</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" id="submitBtn">Войти</button>
+            </form>
+            <p id="toggleMode">
+                <span id="toggleText">Нет аккаунта?</span>
+                <a href="#" id="toggleLink">Создать аккаунт</a>
+            </p>
+            <p id="message" style="color:red; margin-top:10px;"></p>
+            <!-- Для менеджера кнопка отправки пароля -->
+            <div id="managerSection" style="display:none; margin-top:20px;">
+                <button id="sendManagerPasswordBtn">Отправить пароль менеджеру</button>
+            </div>
+        </div>
+    </section>
+
+    <script type="module">
+        import { registerUser, loginUser, onAuthStateChangedListener } from './js/auth.js';
+        import { sendManagerPassword } from './js/manager.js'; // будет реализовано
+
+        const urlParams = new URLSearchParams(window.location.search);
+        let mode = urlParams.get('mode') || 'login'; // 'login' или 'register'
+
+        const formTitle = document.getElementById('formTitle');
+        const submitBtn = document.getElementById('submitBtn');
+        const toggleLink = document.getElementById('toggleLink');
+        const toggleText = document.getElementById('toggleText');
+        const registerFields = document.getElementById('registerFields');
+        const message = document.getElementById('message');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const fullNameInput = document.getElementById('fullName');
+        const roleSelect = document.getElementById('roleSelect');
+
+        function setMode(newMode) {
+            mode = newMode;
+            if (mode === 'register') {
+                formTitle.textContent = 'Создать аккаунт';
+                submitBtn.textContent = 'Создать аккаунт';
+                toggleText.textContent = 'Уже есть аккаунт?';
+                toggleLink.textContent = 'Войти';
+                registerFields.style.display = 'block';
+                document.getElementById('managerSection').style.display = 'none';
+            } else {
+                formTitle.textContent = 'Войти в аккаунт';
+                submitBtn.textContent = 'Войти';
+                toggleText.textContent = 'Нет аккаунта?';
+                toggleLink.textContent = 'Создать аккаунт';
+                registerFields.style.display = 'none';
+                // Показываем кнопку для менеджера только если вход
+                document.getElementById('managerSection').style.display = 'block';
+            }
+        }
+
+        // Переключение режима
+        toggleLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            const newMode = (mode === 'login') ? 'register' : 'login';
+            setMode(newMode);
+            history.pushState({}, '', `?mode=${newMode}`);
+        });
+
+        // Обработка формы
+        document.getElementById('authForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = emailInput.value.trim();
+            const password = passwordInput.value.trim();
+            message.textContent = '';
+
+            if (mode === 'register') {
+                const fullName = fullNameInput.value.trim();
+                const role = roleSelect.value;
+                if (!fullName) {
+                    message.textContent = 'Введите полное имя';
+                    return;
+                }
+                const result = await registerUser(email, password, role, fullName);
+                if (result.success) {
+                    message.style.color = 'green';
+                    message.textContent = 'Аккаунт создан! Вход...';
+                    // Перенаправляем на главную
+                    setTimeout(() => window.location.href = 'index.html', 1000);
+                } else {
+                    message.style.color = 'red';
+                    message.textContent = result.error;
+                }
+            } else { // login
+                const result = await loginUser(email, password);
+                if (result.success) {
+                    message.style.color = 'green';
+                    message.textContent = 'Вход выполнен!';
+                    setTimeout(() => window.location.href = 'index.html', 500);
+                } else {
+                    message.style.color = 'red';
+                    message.textContent = result.error;
+                }
+            }
+        });
+
+        // Кнопка отправки пароля для менеджера
+        document.getElementById('sendManagerPasswordBtn').addEventListener('click', async () => {
+            const result = await sendManagerPassword(); // функция из manager.js
+            alert(result.message);
+        });
+
+        // При загрузке устанавливаем режим
+        setMode(mode);
+    </script>
+
+    <!-- Футер (как в других страницах) -->
+    <footer class="footer2">...</footer>
+</body>
+</html>
