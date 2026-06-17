@@ -1077,3 +1077,26 @@ h1 {
         width: 100%; /* Кнопка занимает всю ширину */
     }
 }
+
+/* Аватар для авторизованного пользователя */
+.avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 20px;
+    font-weight: bold;
+    text-decoration: none;
+    background: transparent;
+    border: 2px solid;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.avatar:hover {
+    opacity: 0.7;
+}
+.role-manager { border-color: #e74c3c; color: #e74c3c; } /* Красный */
+.role-doctor { border-color: #3498db; color: #3498db; } /* Синий */
+.role-client { border-color: #2ecc71; color: #2ecc71; } /* Зелёный */
