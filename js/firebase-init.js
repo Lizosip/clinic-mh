@@ -1,4 +1,4 @@
-<script type="module">
+
   // Import the functions you need from the SDKs you need
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
 
@@ -19,4 +19,4 @@ import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.0/firebas
 
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
-</script>
+
