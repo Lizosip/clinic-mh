@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .profile-section {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        }
+        .profile-section h1 {
+            text-align: center;
+            font-size: 28px;
+            color: #232536;
+            margin-bottom: 30px;
+        }
+        .profile-field {
+            margin-bottom: 20px;
+        }
+        .profile-field label {
+            display: block;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 5px;
+        }
+        .profile-field input, .profile-field select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        .profile-field p {
+            margin: 0;
+            font-size: 18px;
+            color: #222;
+        }
+        .profile-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        .profile-actions button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            flex: 1;
+        }
+        .btn-save { background: #ffc107; color: #232536; }
+        .btn-save:hover { background: #e6a800; }
+        .btn-reset { background: #3498db; color: white; }
+        .btn-reset:hover { background: #2980b9; }
+        .btn-logout { background: #e74c3c; color: white; }
+        .btn-logout:hover { background: #c0392b; }
+        .message { margin-top: 15px; text-align: center; color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="container">
+            <div class="logo"><a href="index.html">Клиника MH</a></div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li><a href="index.html">Главная</a></li>
+                    <li><a href="blog.html">Услуги</a></li>
+                    <li><a href="contact.html">Контакты</a></li>
+                    <li><a href="privacy.html">Документация</a></li>
+                </ul>
+            </nav>
+            <a href="contact.html" class="subscribe-btn" style="margin-right:10px;">Записаться</a>
+            <a href="login.html" class="subscribe-btn" id="authBtn">Войти</a>
+        </div>
+    </header>
+
+    <section class="profile-section" id="profileSection">
+        <h1>Мой профиль</h1>
+        <div id="profileContent">
+            <p>Загрузка...</p>
+        </div>
+    </section>
+
+    <footer class="footer2">
+        <div class="footer2-subscribe">
+            <p class="footer2-subscribe-text">Оставьте свои данные для обратной связи по любому вопросу</p>
+            <form class="footer2-subscribe-form">
+                <input type="email" placeholder="Enter Your Email" required>
+                <button type="submit">Отправить</button>
+            </form>
+        </div>
+        <div class="footer2-bottom">
+            <div class="footer2-info">Савульский переулок д.10<br>clinik_MH@finsweet.com 020 7993 2905</div>
+            <div class="footer2-socials">
+                <a href="#"><img src="photo/social/Negative.png" alt="Facebook"></a>
+                <a href="#"><img src="photo/social/Negative_2.png" alt="Twitter"></a>
+                <a href="#"><img src="photo/social/Negative_3.png" alt="Instagram"></a>
+                <a href="#"><img src="photo/social/Vector.png" alt="LinkedIn"></a>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, sendPasswordResetEmail, updateProfile } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+        import { logoutUser, getUserData } from './js/auth.js';
+        import { renderHeader } from './js/ui.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA_K95yFhHJaku4AUl5ntF-qEN9owOtrhs",
+            authDomain: "clinicmh-3012c.firebaseapp.com",
+            projectId: "clinicmh-3012c",
+            storageBucket: "clinicmh-3012c.firebasestorage.app",
+            messagingSenderId: "801576443044",
+            appId: "1:801576443044:web:1d97bc437a4a5931589a31"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+            const userData = await getUserData(user.uid);
+            if (!userData) {
+                alert('Данные пользователя не найдены');
+                window.location.href = 'index.html';
+                return;
+            }
+            renderHeader(userData.role);
+            renderProfile(user, userData);
+        });
+
+        async function renderProfile(user, userData) {
+            const container = document.getElementById('profileContent');
+            const roleLabels = { 'client': 'Пациент', 'doctor': 'Врач', 'manager': 'Менеджер' };
+            const roleText = roleLabels[userData.role] || userData.role;
+
+            container.innerHTML = `
+                <div class="profile-field">
+                    <label>Роль</label>
+                    <p><strong>${roleText}</strong></p>
+                </div>
+                <div class="profile-field">
+                    <label>Email</label>
+                    <p>${user.email}</p>
+                </div>
+                <div class="profile-field">
+                    <label>Полное имя</label>
+                    <p>${userData.fullName || 'Не указано'}</p>
+                </div>
+                <div class="profile-field">
+                    <label>Дата рождения</label>
+                    <input type="date" id="birthDate" value="${userData.birthDate || ''}">
+                </div>
+                <div class="profile-actions">
+                    <button class="btn-save" id="saveBirthBtn">Сохранить дату рождения</button>
+                    <button class="btn-reset" id="resetPasswordBtn">Сбросить пароль</button>
+                    <button class="btn-logout" id="logoutBtn">Выйти</button>
+                </div>
+                <div id="profileMessage" class="message"></div>
+            `;
+
+            // Сохранение даты рождения
+            document.getElementById('saveBirthBtn').addEventListener('click', async () => {
+                const birthDate = document.getElementById('birthDate').value;
+                if (!birthDate) {
+                    showMessage('Выберите дату', 'error');
+                    return;
+                }
+                try {
+                    await updateDoc(doc(db, "users", user.uid), { birthDate: birthDate });
+                    showMessage('Дата рождения сохранена', 'success');
+                } catch (e) {
+                    showMessage('Ошибка: ' + e.message, 'error');
+                }
+            });
+
+            // Сброс пароля
+            document.getElementById('resetPasswordBtn').addEventListener('click', async () => {
+                if (confirm('Отправить ссылку для сброса пароля на ваш email?')) {
+                    try {
+                        await sendPasswordResetEmail(auth, user.email);
+                        showMessage('Ссылка для сброса отправлена на почту', 'success');
+                    } catch (e) {
+                        showMessage('Ошибка: ' + e.message, 'error');
+                    }
+                }
+            });
+
+            // Выход
+            document.getElementById('logoutBtn').addEventListener('click', async () => {
+                await logoutUser();
+                window.location.href = 'index.html';
+            });
+        }
+
+        function showMessage(text, type) {
+            const el = document.getElementById('profileMessage');
+            el.textContent = text;
+            el.className = 'message ' + (type === 'error' ? 'error' : '');
+        }
+    </script>
+</body>
+</html>
