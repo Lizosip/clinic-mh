@@ -1,1 +1,101 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Календарь врача</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* те же стили, что и у клиента, можно вынести в общий calendar.css */
+        .calendar-section { max-width: 900px; margin: 40px auto; padding: 20px; }
+        .calendar-section h1 { text-align: center; font-size: 32px; color: #232536; }
+        .appointments-list { display: flex; flex-direction: column; gap: 20px; margin-top: 30px; }
+        .appointment-card {
+            background: white;
+            padding: 20px 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            border-left: 5px solid #6c42d9;
+        }
+        .appointment-card p { margin: 5px 0; color: #333; }
+        .appointment-card strong { color: #232536; }
+        .empty-message { text-align: center; color: #888; font-size: 18px; margin-top: 40px; }
+    </style>
+</head>
+<body>
 
+    <!-- Хедер -->
+    <header class="header">
+        <div class="container">
+            <div class="logo"><a href="index.html">Клиника MH</a></div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li><a href="index.html">Главная</a></li>
+                    <li><a href="blog.html">Услуги</a></li>
+                    <li><a href="contact.html">Контакты</a></li>
+                    <li><a href="privacy.html">Документация</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="calendar-section">
+        <h1>Мои записи (пациенты)</h1>
+        <div id="appointmentsList" class="appointments-list">
+            <p class="empty-message">Загрузка...</p>
+        </div>
+    </section>
+
+    <!-- Футер (как в других страницах) -->
+
+    <script type="module">
+        import { auth, db } from './js/firebase-init.js';
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+        import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+        import { getUserData } from './js/auth.js';
+        import { renderHeader } from './js/ui.js';
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+            const userData = await getUserData(user.uid);
+            if (userData.role !== 'doctor') {
+                alert('Доступ только для врачей');
+                window.location.href = 'index.html';
+                return;
+            }
+            renderHeader('doctor');
+            loadDoctorAppointments(user.uid);
+        });
+
+        async function loadDoctorAppointments(doctorUid) {
+            const q = query(
+                collection(db, "appointments"),
+                where("doctorId", "==", doctorUid),
+                where("status", "==", "confirmed")
+            );
+            const querySnapshot = await getDocs(q);
+            const list = document.getElementById('appointmentsList');
+            list.innerHTML = '';
+            if (querySnapshot.empty) {
+                list.innerHTML = '<p class="empty-message">Нет записей.</p>';
+                return;
+            }
+            querySnapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                const card = document.createElement('div');
+                card.className = 'appointment-card';
+                card.innerHTML = `
+                    <p><strong>Пациент:</strong> ${data.clientName || 'Неизвестно'}</p>
+                    <p><strong>День:</strong> ${data.day}</p>
+                    <p><strong>Время:</strong> ${data.time}</p>
+                    <p><strong>Комментарий менеджера:</strong> ${data.comment || ''}</p>
+                `;
+                list.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html>
