@@ -45,19 +45,19 @@
 
         <div class="form-container contact_card">
     <form id="contactForm" class="contact-form">
-        <input type="text" name="fullname" id="fullname" placeholder="Полное имя" required>
-        <input type="email" name="email" id="email" placeholder="Ваша почта" required>
-        <input list="options" type="text" name="age" id="age" placeholder="Возраст" required>
+        <input type="text" id="fullname" placeholder="Полное имя" required>
+        <input type="email" id="email" placeholder="Ваша почта" required>
+        <input list="options" id="age" placeholder="Возраст" required>
         <datalist id="options">
             <option value="0-4 годов">
             <option value="5-10 лет">
             <option value="11-18 лет">
             <option value="18 и больше лет">
         </datalist>
-        <textarea name="message" id="message" placeholder="Вопрос и когда с Вами связаться" rows="4" required></textarea>
+        <textarea id="message" placeholder="Вопрос и когда с Вами связаться" rows="4" required></textarea>
         <button type="submit">Отправить</button>
     </form>
-    <div id="formStatus" style="margin-top: 15px; text-align: center; display: none;"></div>
+    <div id="formStatus" style="margin-top:15px; text-align:center; display:none;"></div>
 </div>
 
 <!-- Подключаем EmailJS SDK -->
@@ -99,7 +99,51 @@
             });
     });
 </script>
+<script type="module">
+    import { submitRequest } from './js/form-handler.js';
+    import { auth } from './js/firebase-init.js';
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
+    const form = document.getElementById('contactForm');
+    const statusDiv = document.getElementById('formStatus');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const fullname = document.getElementById('fullname').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const age = document.getElementById('age').value.trim();
+        const message = document.getElementById('message').value.trim();
+
+        if (!fullname || !email || !age || !message) {
+            statusDiv.style.display = 'block';
+            statusDiv.style.color = 'red';
+            statusDiv.textContent = 'Заполните все поля!';
+            return;
+        }
+
+        // Проверяем, авторизован ли пользователь
+        let userId = null;
+        const user = auth.currentUser;
+        if (user) {
+            userId = user.uid;
+        }
+
+        statusDiv.style.display = 'block';
+        statusDiv.textContent = 'Отправка...';
+        statusDiv.style.color = '#222';
+
+        const result = await submitRequest({ fullname, email, age, message }, userId);
+        if (result.success) {
+            statusDiv.style.color = 'green';
+            statusDiv.textContent = '✅ Заявка отправлена! Менеджер свяжется с вами.';
+            form.reset();
+            setTimeout(() => { statusDiv.style.display = 'none'; }, 5000);
+        } else {
+            statusDiv.style.color = 'red';
+            statusDiv.textContent = '❌ Ошибка: ' + result.error;
+        }
+    });
+</script>
     </section>
 
 
