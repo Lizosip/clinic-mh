@@ -3,89 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мой календарь</title>
+    <title>Календарь врача</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
-        .calendar-section {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 20px;
-        }
-        .calendar-section h1 {
-            text-align: center;
-            font-size: 32px;
-            color: #232536;
-        }
-        .appointments-list {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            margin-top: 30px;
-        }
+        /* ... все стили остаются без изменений (можно оставить прежние) ... */
+        .calendar-section { max-width: 1100px; margin: 40px auto; padding: 20px; }
+        .calendar-section h1 { text-align: center; font-size: 32px; color: #232536; }
+        .appointments-list { display: flex; flex-direction: column; gap: 20px; margin-top: 30px; }
         .appointment-card {
             background: white;
             padding: 20px 25px;
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-            border-left: 5px solid #2ecc71;
+            border-left: 5px solid #3498db;
+            position: relative;
         }
-        .appointment-card.completed {
-            border-left-color: #95a5a6;
-            opacity: 0.8;
+        .appointment-card p { margin: 5px 0; color: #333; }
+        .appointment-card strong { color: #232536; }
+        .card-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
         }
-        .appointment-card p {
-            margin: 5px 0;
-            color: #333;
-        }
-        .appointment-card strong {
-            color: #232536;
-        }
-        .status-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: bold;
-            margin-top: 8px;
-        }
-        .status-confirmed { background: #2ecc71; color: white; }
-        .status-completed { background: #95a5a6; color: white; }
-        .file-links {
-            margin-top: 12px;
-        }
-        .file-links a {
-            display: inline-block;
-            margin-right: 15px;
-            color: #3498db;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        .file-links a:hover {
-            text-decoration: underline;
-        }
-        .cancel-btn {
-            background: #e74c3c;
-            color: white;
-            border: none;
+        .card-actions button {
             padding: 8px 16px;
+            border: none;
             border-radius: 6px;
-            cursor: pointer;
             font-weight: bold;
-            margin-top: 10px;
+            cursor: pointer;
         }
-        .cancel-btn:hover {
-            background: #c0392b;
+        .btn-complete { background: #2ecc71; color: white; }
+        .btn-complete:hover { background: #27ae60; }
+        .btn-treatment { background: #f39c12; color: white; }
+        .btn-treatment:hover { background: #e08e0b; }
+        .btn-prescription { background: #9b59b6; color: white; }
+        .btn-prescription:hover { background: #8e44ad; }
+        .empty-message { text-align: center; color: #888; font-size: 18px; margin-top: 40px; }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
         }
-        .empty-message {
-            text-align: center;
-            color: #888;
-            font-size: 18px;
-            margin-top: 40px;
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
         }
+        .modal-content h2 { text-align: center; margin-bottom: 20px; }
+        .modal-content label { display: block; font-weight: bold; margin-top: 15px; }
+        .modal-content input, .modal-content textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+        .modal-content textarea { height: 80px; resize: vertical; }
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: flex-end;
+        }
+        .modal-buttons button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn-send { background: #2ecc71; color: white; }
+        .btn-close { background: #e74c3c; color: white; }
+        .btn-send:hover { background: #27ae60; }
+        .btn-close:hover { background: #c0392b; }
     </style>
 </head>
 <body>
-
+    <!-- ХЕДЕР -->
     <header class="header">
         <div class="container">
             <div class="logo"><a href="index.html">Клиника MH</a></div>
@@ -103,12 +107,67 @@
     </header>
 
     <section class="calendar-section">
-        <h1>Мои записи</h1>
+        <h1>Мои записи (пациенты)</h1>
         <div id="appointmentsList" class="appointments-list">
             <p class="empty-message">Загрузка...</p>
         </div>
     </section>
 
+    <!-- Модалка Лечебный лист -->
+    <div id="treatmentModal" class="modal">
+        <div class="modal-content">
+            <h2>Лечебный лист</h2>
+            <div id="treatmentForm">
+                <label>Пациент</label>
+                <input type="text" id="tPatientName" readonly>
+                <label>Дата</label>
+                <input type="text" id="tDate" readonly>
+                <label>Жалобы и динамика состояния</label>
+                <textarea id="tComplaints"></textarea>
+                <label>Проведенное обследование и лечение</label>
+                <textarea id="tExamination"></textarea>
+                <label>Диагноз основного заболевания</label>
+                <textarea id="tDiagnosis"></textarea>
+                <label>Осложнения</label>
+                <textarea id="tComplications"></textarea>
+                <label>Сопутствующие заболевания</label>
+                <textarea id="tConcomitant"></textarea>
+                <label>Рекомендации по дальнейшему наблюдению</label>
+                <textarea id="tRecommendations"></textarea>
+                <label>Лечащий врач</label>
+                <input type="text" id="tDoctorName" readonly>
+                <div class="modal-buttons">
+                    <button class="btn-close" id="closeTreatment">Отмена</button>
+                    <button class="btn-send" id="sendTreatment">Отправить пациенту</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модалка Рецепт -->
+    <div id="prescriptionModal" class="modal">
+        <div class="modal-content">
+            <h2>Направление на рецепт</h2>
+            <div id="prescriptionForm">
+                <label>Пациент</label>
+                <input type="text" id="pPatientName" readonly>
+                <label>Дата</label>
+                <input type="text" id="pDate" readonly>
+                <label>Дата рождения пациента</label>
+                <input type="date" id="pBirthDate">
+                <label>Лекарственный препарат</label>
+                <textarea id="pDrug"></textarea>
+                <label>Врач</label>
+                <input type="text" id="pDoctorName" readonly>
+                <div class="modal-buttons">
+                    <button class="btn-close" id="closePrescription">Отмена</button>
+                    <button class="btn-send" id="sendPrescription">Отправить пациенту</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ФУТЕР -->
     <footer class="footer2">
         <div class="footer2-subscribe">
             <p class="footer2-subscribe-text">Оставьте свои данные для обратной связи по любому вопросу</p>
@@ -131,7 +190,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
-        import { getFirestore, collection, query, where, getDocs, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+        import { getFirestore, collection, query, where, getDocs, updateDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
         import { getUserData } from './js/auth.js';
         import { renderHeader } from './js/ui.js';
 
@@ -147,63 +206,221 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        let currentAppointmentId = null;
+        let currentAppointmentData = null;
+        let doctorUid = '';
+
         onAuthStateChanged(auth, async (user) => {
             if (!user) {
                 window.location.href = 'login.html';
                 return;
             }
             const userData = await getUserData(user.uid);
-            if (!userData || userData.role !== 'client') {
-                alert('Доступ только для клиентов');
+            if (!userData || userData.role !== 'doctor') {
+                alert('Доступ только для врачей');
                 window.location.href = 'index.html';
                 return;
             }
-            renderHeader('client');
-            loadClientAppointments(user.uid);
+            doctorUid = user.uid;
+            renderHeader('doctor');
+            loadDoctorAppointments(user.uid);
         });
 
-        async function loadClientAppointments(clientUid) {
-            const q = query(collection(db, "appointments"), where("clientId", "==", clientUid));
+        async function loadDoctorAppointments(doctorUid) {
+            const q = query(collection(db, "appointments"), where("doctorId", "==", doctorUid), where("status", "==", "confirmed"));
             const querySnapshot = await getDocs(q);
             const list = document.getElementById('appointmentsList');
             list.innerHTML = '';
             if (querySnapshot.empty) {
-                list.innerHTML = '<p class="empty-message">У вас пока нет записей.</p>';
+                list.innerHTML = '<p class="empty-message">Нет записей.</p>';
                 return;
             }
             querySnapshot.forEach((docSnap) => {
                 const data = docSnap.data();
-                const isCompleted = data.status === 'completed';
                 const card = document.createElement('div');
-                card.className = `appointment-card ${isCompleted ? 'completed' : ''}`;
+                card.className = 'appointment-card';
+                const files = data.files || [];
+                const hasTreatment = files.some(f => f.type === 'treatment');
+                const hasPrescription = files.some(f => f.type === 'prescription');
+
                 card.innerHTML = `
-                    <p><strong>Врач:</strong> ${data.doctorName || 'Не указан'}</p>
+                    <p><strong>Пациент:</strong> ${data.clientName || 'Неизвестно'}</p>
                     <p><strong>День:</strong> ${data.day}</p>
                     <p><strong>Время:</strong> ${data.time}</p>
                     <p><strong>Комментарий:</strong> ${data.comment || ''}</p>
-                    <span class="status-badge ${isCompleted ? 'status-completed' : 'status-confirmed'}">
-                        ${isCompleted ? '✅ Завершено' : '📅 Активно'}
-                    </span>
-                    ${!isCompleted ? `<button class="cancel-btn" data-id="${docSnap.id}">Отменить запись</button>` : ''}
-                    <div class="file-links">
-                        ${data.files ? data.files.map(f => `
-                            <a href="${f.dataUrl}" download="${f.type === 'treatment' ? 'Лечебный_лист' : 'Рецепт'}.pdf">📄 ${f.type === 'treatment' ? 'Лечебный лист' : 'Рецепт'}</a>
-                        `).join('') : ''}
+                    <div class="card-actions">
+                        <button class="btn-complete" data-id="${docSnap.id}">Завершить приём</button>
+                        ${!hasTreatment ? `<button class="btn-treatment" data-id="${docSnap.id}">Лечебный лист</button>` : ''}
+                        ${!hasPrescription ? `<button class="btn-prescription" data-id="${docSnap.id}">Рецепт</button>` : ''}
                     </div>
                 `;
                 list.appendChild(card);
 
-                const cancelBtn = card.querySelector('.cancel-btn');
-                if (cancelBtn) {
-                    cancelBtn.addEventListener('click', async () => {
-                        if (confirm('Вы уверены, что хотите отменить запись?')) {
-                            await updateDoc(doc(db, "appointments", docSnap.id), { status: 'canceled' });
-                            alert('Запись отменена');
-                            loadClientAppointments(clientUid);
-                        }
-                    });
-                }
+                card.querySelector('.btn-complete')?.addEventListener('click', () => completeAppointment(docSnap.id));
+                card.querySelector('.btn-treatment')?.addEventListener('click', () => openTreatmentModal(docSnap.id, data));
+                card.querySelector('.btn-prescription')?.addEventListener('click', () => openPrescriptionModal(docSnap.id, data));
             });
+        }
+
+        async function completeAppointment(appointmentId) {
+            if (confirm('Завершить приём? Запись будет отмечена как завершённая.')) {
+                await updateDoc(doc(db, "appointments", appointmentId), { status: 'completed' });
+                alert('Приём завершён');
+                loadDoctorAppointments(doctorUid);
+            }
+        }
+
+        // === ЛЕЧЕБНЫЙ ЛИСТ ===
+        function openTreatmentModal(appointmentId, data) {
+            currentAppointmentId = appointmentId;
+            currentAppointmentData = data;
+            document.getElementById('tPatientName').value = data.clientName || '';
+            document.getElementById('tDate').value = new Date().toISOString().slice(0,10);
+            document.getElementById('tDoctorName').value = data.doctorName || '';
+            document.getElementById('tComplaints').value = '';
+            document.getElementById('tExamination').value = '';
+            document.getElementById('tDiagnosis').value = '';
+            document.getElementById('tComplications').value = '';
+            document.getElementById('tConcomitant').value = '';
+            document.getElementById('tRecommendations').value = '';
+            document.getElementById('treatmentModal').style.display = 'flex';
+        }
+
+        document.getElementById('closeTreatment').addEventListener('click', () => {
+            document.getElementById('treatmentModal').style.display = 'none';
+        });
+
+        document.getElementById('sendTreatment').addEventListener('click', async () => {
+            const patientName = document.getElementById('tPatientName').value;
+            const date = document.getElementById('tDate').value;
+            const complaints = document.getElementById('tComplaints').value;
+            const examination = document.getElementById('tExamination').value;
+            const diagnosis = document.getElementById('tDiagnosis').value;
+            const complications = document.getElementById('tComplications').value;
+            const concomitant = document.getElementById('tConcomitant').value;
+            const recommendations = document.getElementById('tRecommendations').value;
+            const doctorName = document.getElementById('tDoctorName').value;
+
+            if (!complaints && !examination && !diagnosis) {
+                alert('Заполните хотя бы основные поля (жалобы, обследование, диагноз)');
+                return;
+            }
+
+            const content = [
+                { label: 'Пациент', value: patientName },
+                { label: 'Дата', value: date },
+                { label: 'Жалобы и динамика состояния', value: complaints },
+                { label: 'Проведенное обследование и лечение', value: examination },
+                { label: 'Диагноз основного заболевания', value: diagnosis },
+                { label: 'Осложнения', value: complications },
+                { label: 'Сопутствующие заболевания', value: concomitant },
+                { label: 'Рекомендации', value: recommendations },
+                { label: 'Лечащий врач', value: doctorName }
+            ];
+
+            try {
+                const base64 = generatePDFBase64('Лечебный лист', content);
+                // Сохраняем в Firestore
+                const appointmentRef = doc(db, "appointments", currentAppointmentId);
+                const docSnap = await getDoc(appointmentRef);
+                const existingFiles = docSnap.data().files || [];
+                existingFiles.push({ type: 'treatment', base64: base64, uploadedAt: new Date().toISOString() });
+                await updateDoc(appointmentRef, { files: existingFiles });
+
+                alert('Лечебный лист отправлен пациенту!');
+                document.getElementById('treatmentModal').style.display = 'none';
+                loadDoctorAppointments(doctorUid);
+            } catch (error) {
+                alert('Ошибка при создании PDF: ' + error.message);
+                console.error(error);
+            }
+        });
+
+        // === РЕЦЕПТ ===
+        function openPrescriptionModal(appointmentId, data) {
+            currentAppointmentId = appointmentId;
+            currentAppointmentData = data;
+            document.getElementById('pPatientName').value = data.clientName || '';
+            document.getElementById('pDate').value = new Date().toISOString().slice(0,10);
+            document.getElementById('pDoctorName').value = data.doctorName || '';
+            if (data.clientId) {
+                getDoc(doc(db, "users", data.clientId)).then(snap => {
+                    if (snap.exists() && snap.data().birthDate) {
+                        document.getElementById('pBirthDate').value = snap.data().birthDate;
+                    }
+                });
+            }
+            document.getElementById('pDrug').value = '';
+            document.getElementById('prescriptionModal').style.display = 'flex';
+        }
+
+        document.getElementById('closePrescription').addEventListener('click', () => {
+            document.getElementById('prescriptionModal').style.display = 'none';
+        });
+
+        document.getElementById('sendPrescription').addEventListener('click', async () => {
+            const patientName = document.getElementById('pPatientName').value;
+            const date = document.getElementById('pDate').value;
+            const birthDate = document.getElementById('pBirthDate').value;
+            const drug = document.getElementById('pDrug').value;
+            const doctorName = document.getElementById('pDoctorName').value;
+
+            if (!drug) {
+                alert('Введите лекарственный препарат');
+                return;
+            }
+            if (!birthDate) {
+                alert('Укажите дату рождения пациента (она не найдена в профиле)');
+                return;
+            }
+
+            const content = [
+                { label: 'Пациент', value: patientName },
+                { label: 'Дата рождения', value: birthDate },
+                { label: 'Дата', value: date },
+                { label: 'Лекарственный препарат', value: drug },
+                { label: 'Врач', value: doctorName }
+            ];
+
+            try {
+                const base64 = generatePDFBase64('Рецепт', content);
+                const appointmentRef = doc(db, "appointments", currentAppointmentId);
+                const docSnap = await getDoc(appointmentRef);
+                const existingFiles = docSnap.data().files || [];
+                existingFiles.push({ type: 'prescription', base64: base64, uploadedAt: new Date().toISOString() });
+                await updateDoc(appointmentRef, { files: existingFiles });
+
+                alert('Рецепт отправлен пациенту!');
+                document.getElementById('prescriptionModal').style.display = 'none';
+                loadDoctorAppointments(doctorUid);
+            } catch (error) {
+                alert('Ошибка при создании PDF: ' + error.message);
+                console.error(error);
+            }
+        });
+
+        // === ГЕНЕРАЦИЯ PDF (возвращает чистый base64 без префикса) ===
+        function generatePDFBase64(title, fields) {
+            if (typeof window.jspdf === 'undefined') {
+                throw new Error('Библиотека jsPDF не загружена');
+            }
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.setFontSize(22);
+            doc.text(title, 20, 20);
+            doc.setFontSize(14);
+            let y = 40;
+            fields.forEach(field => {
+                doc.setFont('helvetica', 'bold');
+                doc.text(field.label + ':', 20, y);
+                doc.setFont('helvetica', 'normal');
+                const lines = doc.splitTextToSize(field.value || '', 170);
+                doc.text(lines, 70, y);
+                y += 10 + (lines.length - 1) * 6;
+            });
+            const dataUri = doc.output('datauristring');
+            // Убираем префикс "data:application/pdf;base64,"
+            return dataUri.split(',')[1];
         }
     </script>
 </body>
