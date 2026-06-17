@@ -187,7 +187,7 @@
                     ${!isCompleted ? `<button class="cancel-btn" data-id="${docSnap.id}">Отменить запись</button>` : ''}
                     <div class="file-links">
                         ${data.files ? data.files.map(f => `
-                            <a href="${f.dataUrl}" download="${f.type === 'treatment' ? 'Лечебный_лист' : 'Рецепт'}.pdf" target="_blank">📄 ${f.type === 'treatment' ? 'Лечебный лист' : 'Рецепт'}</a>
+                            <a href="${f.dataUrl}" download="${f.type === 'treatment' ? 'Лечебный_лист' : 'Рецепт'}.pdf">📄 ${f.type === 'treatment' ? 'Лечебный лист' : 'Рецепт'}</a>
                         `).join('') : ''}
                     </div>
                 `;
