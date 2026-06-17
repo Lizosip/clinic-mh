@@ -194,5 +194,20 @@
             </div>
         </div>
     </header>
+
+    <script type="module">
+    import { onAuthStateChangedListener } from './js/auth.js';
+    import { renderHeader } from './js/ui.js';
+
+    onAuthStateChangedListener((user, userData) => {
+        if (user && userData) {
+            // Пользователь авторизован – обновляем хедер
+            renderHeader(userData.role);
+        } else {
+            // Гость – убираем лишние кнопки, если есть
+            renderHeader(null);
+        }
+    });
+</script>
 </body>
 </html>
