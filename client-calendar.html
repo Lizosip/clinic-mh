@@ -29,6 +29,10 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.06);
             border-left: 5px solid #2ecc71;
         }
+        .appointment-card.completed {
+            border-left-color: #95a5a6;
+            opacity: 0.8;
+        }
         .appointment-card p {
             margin: 5px 0;
             color: #333;
@@ -36,11 +40,28 @@
         .appointment-card strong {
             color: #232536;
         }
-        .empty-message {
-            text-align: center;
-            color: #888;
-            font-size: 18px;
-            margin-top: 40px;
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+        .status-confirmed { background: #2ecc71; color: white; }
+        .status-completed { background: #95a5a6; color: white; }
+        .file-links {
+            margin-top: 12px;
+        }
+        .file-links a {
+            display: inline-block;
+            margin-right: 15px;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .file-links a:hover {
+            text-decoration: underline;
         }
         .cancel-btn {
             background: #e74c3c;
@@ -55,11 +76,16 @@
         .cancel-btn:hover {
             background: #c0392b;
         }
+        .empty-message {
+            text-align: center;
+            color: #888;
+            font-size: 18px;
+            margin-top: 40px;
+        }
     </style>
 </head>
 <body>
 
-    <!-- ===== ХЕДЕР ===== -->
     <header class="header">
         <div class="container">
             <div class="logo"><a href="index.html">Клиника MH</a></div>
@@ -76,7 +102,6 @@
         </div>
     </header>
 
-    <!-- ===== КОНТЕНТ ===== -->
     <section class="calendar-section">
         <h1>Мои записи</h1>
         <div id="appointmentsList" class="appointments-list">
@@ -84,7 +109,6 @@
         </div>
     </section>
 
-    <!-- ===== ФУТЕР ===== -->
     <footer class="footer2">
         <div class="footer2-subscribe">
             <p class="footer2-subscribe-text">Оставьте свои данные для обратной связи по любому вопросу</p>
@@ -94,10 +118,7 @@
             </form>
         </div>
         <div class="footer2-bottom">
-            <div class="footer2-info">
-                Савульский переулок д.10<br>
-                clinik_MH@finsweet.com 020 7993 2905
-            </div>
+            <div class="footer2-info">Савульский переулок д.10<br>clinik_MH@finsweet.com 020 7993 2905</div>
             <div class="footer2-socials">
                 <a href="#"><img src="photo/social/Negative.png" alt="Facebook"></a>
                 <a href="#"><img src="photo/social/Negative_2.png" alt="Twitter"></a>
@@ -107,12 +128,10 @@
         </div>
     </footer>
 
-    <!-- ===== СКРИПТЫ ===== -->
     <script type="module">
-        // Прямая инициализация Firebase (как в doctor-calendar.html)
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
-        import { getFirestore, collection, query, where, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+        import { getFirestore, collection, query, where, getDocs, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
         import { getUserData } from './js/auth.js';
         import { renderHeader } from './js/ui.js';
 
@@ -124,12 +143,10 @@
             messagingSenderId: "801576443044",
             appId: "1:801576443044:web:1d97bc437a4a5931589a31"
         };
-
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Проверка авторизации и роли
         onAuthStateChanged(auth, async (user) => {
             if (!user) {
                 window.location.href = 'login.html';
@@ -146,46 +163,48 @@
         });
 
         async function loadClientAppointments(clientUid) {
-            const appointmentsRef = collection(db, "appointments");
-            const q = query(
-                appointmentsRef,
-                where("clientId", "==", clientUid),
-                where("status", "==", "confirmed")
-            );
+            const q = query(collection(db, "appointments"), where("clientId", "==", clientUid));
             const querySnapshot = await getDocs(q);
             const list = document.getElementById('appointmentsList');
             list.innerHTML = '';
             if (querySnapshot.empty) {
-                list.innerHTML = '<p class="empty-message">У вас пока нет подтверждённых записей.</p>';
+                list.innerHTML = '<p class="empty-message">У вас пока нет записей.</p>';
                 return;
             }
             querySnapshot.forEach((docSnap) => {
                 const data = docSnap.data();
+                const isCompleted = data.status === 'completed';
                 const card = document.createElement('div');
-                card.className = 'appointment-card';
+                card.className = `appointment-card ${isCompleted ? 'completed' : ''}`;
                 card.innerHTML = `
-                    <div>
-                        <p><strong>Врач:</strong> ${data.doctorName || 'Не указан'}</p>
-                        <p><strong>День:</strong> ${data.day}</p>
-                        <p><strong>Время:</strong> ${data.time}</p>
-                        <p><strong>Комментарий:</strong> ${data.comment || ''}</p>
+                    <p><strong>Врач:</strong> ${data.doctorName || 'Не указан'}</p>
+                    <p><strong>День:</strong> ${data.day}</p>
+                    <p><strong>Время:</strong> ${data.time}</p>
+                    <p><strong>Комментарий:</strong> ${data.comment || ''}</p>
+                    <span class="status-badge ${isCompleted ? 'status-completed' : 'status-confirmed'}">
+                        ${isCompleted ? '✅ Завершено' : '📅 Активно'}
+                    </span>
+                    ${!isCompleted ? `<button class="cancel-btn" data-id="${docSnap.id}">Отменить запись</button>` : ''}
+                    <div class="file-links">
+                        ${data.files ? data.files.map(f => `
+                            <a href="${f.url}" target="_blank">📄 ${f.type === 'treatment' ? 'Лечебный лист' : 'Рецепт'}</a>
+                        `).join('') : ''}
                     </div>
-                    <button class="cancel-btn" data-id="${docSnap.id}">Отменить запись</button>
                 `;
                 list.appendChild(card);
 
-                // Обработчик отмены
                 const cancelBtn = card.querySelector('.cancel-btn');
-                cancelBtn.addEventListener('click', async () => {
-                    if (confirm('Вы уверены, что хотите отменить запись?')) {
-                        await deleteDoc(doc(db, "appointments", docSnap.id));
-                        alert('Запись отменена');
-                        loadClientAppointments(clientUid); // обновить список
-                    }
-                });
+                if (cancelBtn) {
+                    cancelBtn.addEventListener('click', async () => {
+                        if (confirm('Вы уверены, что хотите отменить запись?')) {
+                            await updateDoc(doc(db, "appointments", docSnap.id), { status: 'canceled' });
+                            alert('Запись отменена');
+                            loadClientAppointments(clientUid);
+                        }
+                    });
+                }
             });
         }
     </script>
-
 </body>
 </html>
