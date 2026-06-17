@@ -1,1 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой календарь</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="calendar.css">
+</head>
+<body>
+    <!-- Хедер с динамическим меню (вставим через JS) -->
+    <header class="header" id="mainHeader">...</header>
 
+    <section class="calendar-section">
+        <h1>Мои записи</h1>
+        <div id="appointmentsList" class="appointments-list">
+            <!-- Записи будут добавлены через JS -->
+            <p>Загрузка...</p>
+        </div>
+    </section>
+
+    <script type="module">
+        import { auth, db } from './js/firebase-init.js';
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+        import { collection, query, where, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+        import { getUserData } from './js/auth.js';
+        import { renderHeader } from './js/ui.js'; // вспомогательная функция
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+            const userData = await getUserData(user.uid);
+            if (userData.role !== 'client') {
+                alert('Доступ только для клиентов');
+                window.location.href = 'index.html';
+                return;
+            }
+            // Рендерим хедер с ролью
+            renderHeader('client');
+            // Загружаем записи клиента
+            loadAppointments(user.uid);
+        });
+
+        async function loadAppointments(clientUid) {
+            const q = query(collection(db, "appointments"), where("clientId", "==", clientUid), where("status", "==", "confirmed"));
+            const querySnapshot = await getDocs(q);
+            const list = document.getElementById('appointmentsList');
+            list.innerHTML = '';
+            if (querySnapshot.empty) {
+                list.innerHTML = '<p>У вас пока нет подтверждённых записей.</p>';
+                return;
+            }
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                const card = document.createElement('div');
+                card.className = 'appointment-card';
+                card.innerHTML = `
+                    <p><strong>Врач:</strong> ${data.doctorName || 'Не указан'}</p>
+                    <p><strong>День:</strong> ${data.day}</p>
+                    <p><strong>Время:</strong> ${data.time}</p>
+                    <p><strong>Комментарий:</strong> ${data.comment || ''}</p>
+                `;
+                list.appendChild(card);
+            });
+        }
+    </script>
+    <!-- Футер -->
+</body>
+</html>
