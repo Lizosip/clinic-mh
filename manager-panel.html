@@ -9,7 +9,21 @@
     <link rel="stylesheet" href="manager.css">
 </head>
 <body>
-    <header class="header" id="mainHeader">...</header>
+        <!-- Хедер -->
+    <header class="header">
+        <div class="container">
+            <div class="logo"><a href="index.html">Клиника MH</a></div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li><a href="index.html">Главная</a></li>
+                    <li><a href="blog.html">Услуги</a></li>
+                    <li><a href="contact.html">Контакты</a></li>
+                    <li><a href="privacy.html">Документация</a></li>
+                </ul>
+            </nav>
+            <a href="login.html" class="subscribe-btn">Войти</a>
+        </div>
+    </header>
 
     <section class="manager-section">
         <h1>Заявки на запись</h1>
@@ -158,5 +172,48 @@
         }
     </script>
     <!-- Футер -->
+    
+ <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <!-- Логотип -->
+            <div class="logo">
+                <a href="#">Клиника MH</a>
+            </div>
+    
+            <!-- Меню навигации -->
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li><a href="#" onclick="window.location.href='index.html'">Главная</a></li>
+                    <li><a href="#" onclick="window.location.href='blog.html'">Услуги</a></li>
+                    <!-- <li><a href="#" onclick="window.location.href='about.html'">О нас Us</a></li> -->
+                    <li><a href="#" onclick="window.location.href='contact.html'">Контакты</a></li>
+                    <li><a href="#" onclick="window.location.href='privacy.html'">Документация</a></li>
+                </ul>
+            </nav>
+        </div>
+        <!-- Блок подписки -->
+        <div class="footer2-subscribe">
+            <p class="footer2-subscribe-text">Оставьте свои данные для обратной связи по любому вопросу</p>
+            <form class="footer2-subscribe-form">
+                <input type="email" placeholder="Enter Your Email" required>
+                <button type="submit">Отправить</button>
+            </form>
+        </div>
+
+        <!-- Нижняя часть футера -->
+        <div class="footer2-bottom">
+            <div class="footer2-info">
+                Савульский переулок д.10<br>
+                clinik_MH@finsweet.com 020 7993 2905
+            </div>
+            <div class="footer2-socials">
+                <a href="#"><img src="photo/social/Negative.png" alt="Facebook"></a>
+                <a href="#"><img src="photo/social/Negative_2.png" alt="Twitter"></a>
+                <a href="#"><img src="photo/social/Negative_3.png" alt="Instagram"></a>
+                <a href="#"><img src="photo/social/Vector.png" alt="LinkedIn"></a>
+            </div>
+        </div>
+    </header>
 </body>
 </html>
