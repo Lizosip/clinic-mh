@@ -11,26 +11,22 @@
 
     <!-- Header -->
     <header class="header">
-        <div class="container">
-            <!-- Логотип -->
-            <div class="logo">
-                <a href="#">Клиника MH</a>
-            </div>
-    
-            <!-- Меню навигации -->
-            <nav class="nav">
-                <ul class="nav-list">
-                    <li><a href="#" onclick="window.location.href='index.html'">Главная</a></li>
-                    <li><a href="#" onclick="window.location.href='blog.html'">Услуги</a></li>
-                    <!-- <li><a href="#" onclick="window.location.href='about.html'">About Us</a></li> -->
-                    <li><a href="#" onclick="window.location.href='contact.html'">Контакты</a></li>
-                </ul>
-            </nav>
-    
-            <!-- Кнопка Subscribe -->
-            <a href="#" onclick="window.location.href='contact.html'" class="subscribe-btn">Записаться</a>
-        </div>
-    </header>
+    <div class="container">
+        <div class="logo"><a href="index.html">Клиника MH</a></div>
+        <nav class="nav">
+            <ul class="nav-list">
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="blog.html">Услуги</a></li>
+                <li><a href="contact.html">Контакты</a></li>
+                <li><a href="privacy.html">Документация</a></li>
+            </ul>
+        </nav>
+        <!-- Кнопка "Записаться" – ведёт на страницу контактов -->
+        <a href="contact.html" class="subscribe-btn" style="margin-right: 10px;">Записаться</a>
+        <!-- Кнопка "Войти / Выйти" – управляется через JS -->
+        <a href="login.html" class="subscribe-btn" id="authBtn">Войти</a>
+    </div>
+</header>
 
 
     <section class="business_section">
