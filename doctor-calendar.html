@@ -22,23 +22,7 @@
     </style>
 </head>
 <body>
-
-    <!-- Хедер -->
-    <header class="header">
-        <div class="container">
-            <div class="logo"><a href="index.html">Клиника MH</a></div>
-            <nav class="nav">
-                <ul class="nav-list">
-                    <li><a href="index.html">Главная</a></li>
-                    <li><a href="blog.html">Услуги</a></li>
-                    <li><a href="contact.html">Контакты</a></li>
-                    <li><a href="privacy.html">Документация</a></li>
-                </ul>
-            </nav>
-            <a href="contact.html" class="subscribe-btn" style="margin-right:10px;">Записаться</a>
-            <a href="login.html" class="subscribe-btn" id="authBtn">Войти</a>
-        </div>
-    </header>
+    <header class="header">...</header> <!-- твой хедер -->
 
     <section class="calendar-section">
         <h1>Мои записи (пациенты)</h1>
@@ -47,40 +31,38 @@
         </div>
     </section>
 
-    <!-- Футер -->
-    <footer class="footer2">
-        <div class="footer2-subscribe">
-            <p class="footer2-subscribe-text">Оставьте свои данные для обратной связи по любому вопросу</p>
-            <form class="footer2-subscribe-form">
-                <input type="email" placeholder="Enter Your Email" required>
-                <button type="submit">Отправить</button>
-            </form>
-        </div>
-        <div class="footer2-bottom">
-            <div class="footer2-info">Савульский переулок д.10<br>clinik_MH@finsweet.com 020 7993 2905</div>
-            <div class="footer2-socials">
-                <a href="#"><img src="photo/social/Negative.png" alt="Facebook"></a>
-                <a href="#"><img src="photo/social/Negative_2.png" alt="Twitter"></a>
-                <a href="#"><img src="photo/social/Negative_3.png" alt="Instagram"></a>
-                <a href="#"><img src="photo/social/Vector.png" alt="LinkedIn"></a>
-            </div>
-        </div>
-    </footer>
+    <footer class="footer2">...</footer> <!-- твой футер -->
 
     <script type="module">
-        import { auth, db } from './js/firebase-init.js';
-        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
-        import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+        // Импортируем всё напрямую, не полагаясь на экспорт из firebase-init.js
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
         import { getUserData } from './js/auth.js';
         import { renderHeader } from './js/ui.js';
 
+        // Конфиг Firebase (скопируй свой из firebase-init.js)
+        const firebaseConfig = {
+            apiKey: "AIzaSyA_K95yFhHJaku4AUl5ntF-qEN9owOtrhs",
+            authDomain: "clinicmh-3012c.firebaseapp.com",
+            projectId: "clinicmh-3012c",
+            storageBucket: "clinicmh-3012c.firebasestorage.app",
+            messagingSenderId: "801576443044",
+            appId: "1:801576443044:web:1d97bc437a4a5931589a31"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Дальше код как был
         onAuthStateChanged(auth, async (user) => {
             if (!user) {
                 window.location.href = 'login.html';
                 return;
             }
             const userData = await getUserData(user.uid);
-            if (userData.role !== 'doctor') {
+            if (!userData || userData.role !== 'doctor') {
                 alert('Доступ только для врачей');
                 window.location.href = 'index.html';
                 return;
@@ -90,8 +72,9 @@
         });
 
         async function loadDoctorAppointments(doctorUid) {
+            const appointmentsRef = collection(db, "appointments");
             const q = query(
-                collection(db, "appointments"),
+                appointmentsRef,
                 where("doctorId", "==", doctorUid),
                 where("status", "==", "confirmed")
             );
