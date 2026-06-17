@@ -6,166 +6,56 @@
     <title>Contact</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="contact.css">
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
 
     <!-- Header -->
     <header class="header">
-    <div class="container">
-        <div class="logo"><a href="index.html">Клиника MH</a></div>
-        <nav class="nav">
-            <ul class="nav-list">
-                <li><a href="index.html">Главная</a></li>
-                <li><a href="blog.html">Услуги</a></li>
-                <li><a href="contact.html">Контакты</a></li>
-                <li><a href="privacy.html">Документация</a></li>
-            </ul>
-        </nav>
-        <!-- Кнопка "Записаться" – ведёт на страницу контактов -->
-        <a href="contact.html" class="subscribe-btn" style="margin-right: 10px;">Записаться</a>
-        <!-- Кнопка "Войти / Выйти" – управляется через JS -->
-        <a href="login.html" class="subscribe-btn" id="authBtn">Войти</a>
-    </div>
-</header>
-
-
-    <section class="contact_section">
-
-        <div class="text_content contact_card">
-            <h4 class="title_text">свяжитесь с нами</h4>
-            <h3 class="text_card">
-                Будем рады помочь!
-            </h3>
-            <p class="description text_card">Наша служба поддержки работает круглосуточно. Ожидание ответа состовляет 15 минут, после чего с Вами свяжется оператор.</p>
-        </div>
-
-
-        <div class="form-container contact_card">
-    <form id="contactForm" class="contact-form">
-        <input type="text" id="fullname" placeholder="Полное имя" required>
-        <input type="email" id="email" placeholder="Ваша почта" required>
-        <input list="options" id="age" placeholder="Возраст" required>
-        <datalist id="options">
-            <option value="0-4 годов">
-            <option value="5-10 лет">
-            <option value="11-18 лет">
-            <option value="18 и больше лет">
-        </datalist>
-        <textarea id="message" placeholder="Вопрос и когда с Вами связаться" rows="4" required></textarea>
-        <button type="submit">Отправить</button>
-    </form>
-    <div id="formStatus" style="margin-top:15px; text-align:center; display:none;"></div>
-</div>
-
-<!-- Подключаем EmailJS SDK -->
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-<script type="text/javascript">
-    (function() {
-        // Инициализация EmailJS с вашим Public Key (User ID)
-        emailjs.init("pLk8dDMxLCUIVbfzP");  // Замените на реальный ключ
-    })();
-
-    document.getElementById('contactForm').addEventListener('submit', function(event) {
-        event.preventDefault();  // Отменяем стандартную отправку
-
-        // Показываем сообщение "Отправка..."
-        const statusDiv = document.getElementById('formStatus');
-        statusDiv.style.display = 'block';
-        statusDiv.innerHTML = 'Отправка...';
-        statusDiv.style.color = '#222';
-
-        // Собираем данные из формы
-        const templateParams = {
-            fullname: document.getElementById('fullname').value,
-            email: document.getElementById('email').value,
-            age: document.getElementById('age').value,
-            message: document.getElementById('message').value
-        };
-
-        // Отправляем через EmailJS
-        emailjs.send('service_g6lpa5c', 'template_7909y7b', templateParams)
-            .then(function(response) {
-                statusDiv.innerHTML = '✅ Сообщение отправлено! Мы свяжемся с вами в ближайшее время.';
-                statusDiv.style.color = 'green';
-                document.getElementById('contactForm').reset();  // очищаем форму
-                setTimeout(() => { statusDiv.style.display = 'none'; }, 5000);
-            }, function(error) {
-                statusDiv.innerHTML = '❌ Ошибка при отправке. Попробуйте позже или напишите напрямую на почту.';
-                statusDiv.style.color = 'red';
-                console.error('EmailJS error:', error);
-            });
-    });
-</script>
-<script type="module">
-    import { submitRequest } from './js/form-handler.js';
-    import { auth } from './js/firebase-init.js';
-    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
-    const form = document.getElementById('contactForm');
-    const statusDiv = document.getElementById('formStatus');
-
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const fullname = document.getElementById('fullname').value.trim();
-        const email = document.getElementById('email').value.trim();
-        const age = document.getElementById('age').value.trim();
-        const message = document.getElementById('message').value.trim();
-
-        if (!fullname || !email || !age || !message) {
-            statusDiv.style.display = 'block';
-            statusDiv.style.color = 'red';
-            statusDiv.textContent = 'Заполните все поля!';
-            return;
-        }
-
-        // Проверяем, авторизован ли пользователь
-        let userId = null;
-        const user = auth.currentUser;
-        if (user) {
-            userId = user.uid;
-        }
-
-        statusDiv.style.display = 'block';
-        statusDiv.textContent = 'Отправка...';
-        statusDiv.style.color = '#222';
-
-        const result = await submitRequest({ fullname, email, age, message }, userId);
-        if (result.success) {
-            statusDiv.style.color = 'green';
-            statusDiv.textContent = '✅ Заявка отправлена! Менеджер свяжется с вами.';
-            form.reset();
-            setTimeout(() => { statusDiv.style.display = 'none'; }, 5000);
-        } else {
-            statusDiv.style.color = 'red';
-            statusDiv.textContent = '❌ Ошибка: ' + result.error;
-        }
-    });
-</script>
-    </section>
-
-
-
-
-    <!-- Header -->
-    <header class="header">
         <div class="container">
-            <!-- Логотип -->
-            <div class="logo">
-                <a href="#">Клиника MH</a>
-            </div>
-    
-            <!-- Меню навигации -->
+            <div class="logo"><a href="index.html">Клиника MH</a></div>
             <nav class="nav">
                 <ul class="nav-list">
-                    <li><a href="#" onclick="window.location.href='index.html'">Главная</a></li>
-                    <li><a href="#" onclick="window.location.href='blog.html'">Услуги</a></li>
-                    <li><a href="#" onclick="window.location.href='contact.html'">Контакты</a></li>
-                    <li><a href="#" onclick="window.location.href='privacy.html'">Документация</a></li>
+                    <li><a href="index.html">Главная</a></li>
+                    <li><a href="blog.html">Услуги</a></li>
+                    <li><a href="contact.html">Контакты</a></li>
+                    <li><a href="privacy.html">Документация</a></li>
                 </ul>
             </nav>
-            
+            <a href="contact.html" class="subscribe-btn" style="margin-right: 10px;">Записаться</a>
+            <a href="login.html" class="subscribe-btn" id="authBtn">Войти</a>
         </div>
-        <!-- Блок подписки -->
+    </header>
+
+    <!-- Секция контактов -->
+    <section class="contact_section">
+        <div class="text_content contact_card">
+            <h4 class="title_text">свяжитесь с нами</h4>
+            <h3 class="text_card">Будем рады помочь!</h3>
+            <p class="description text_card">Наша служба поддержки работает круглосуточно. Ожидание ответа составляет 15 минут, после чего с Вами свяжется оператор.</p>
+        </div>
+
+        <div class="form-container contact_card">
+            <form id="contactForm" class="contact-form">
+                <input type="text" id="fullname" placeholder="Полное имя" required>
+                <input type="email" id="email" placeholder="Ваша почта" required>
+                <input list="options" id="age" placeholder="Возраст" required>
+                <datalist id="options">
+                    <option value="0-4 годов">
+                    <option value="5-10 лет">
+                    <option value="11-18 лет">
+                    <option value="18 и больше лет">
+                </datalist>
+                <textarea id="message" placeholder="Вопрос и когда с Вами связаться" rows="4" required></textarea>
+                <button type="submit">Отправить</button>
+            </form>
+            <div id="formStatus" style="margin-top:15px; text-align:center; display:none;"></div>
+        </div>
+    </section>
+
+    <!-- Футер (исправлен: был дублирующий header, теперь footer) -->
+    <footer class="footer2">
         <div class="footer2-subscribe">
             <p class="footer2-subscribe-text">Оставьте свои данные для обратной связи по любому вопросу</p>
             <form class="footer2-subscribe-form">
@@ -173,8 +63,6 @@
                 <button type="submit">Отправить</button>
             </form>
         </div>
-
-        <!-- Нижняя часть футера -->
         <div class="footer2-bottom">
             <div class="footer2-info">
                 Савульский переулок д.10<br>
@@ -187,20 +75,94 @@
                 <a href="#"><img src="photo/social/Vector.png" alt="LinkedIn"></a>
             </div>
         </div>
-    </header>
-    <script type="module">
-    import { onAuthStateChangedListener } from './js/auth.js';
-    import { renderHeader } from './js/ui.js';
+    </footer>
 
-    onAuthStateChangedListener((user, userData) => {
-        if (user && userData) {
-            // Пользователь авторизован – обновляем хедер
-            renderHeader(userData.role);
-        } else {
-            // Гость – убираем лишние кнопки, если есть
-            renderHeader(null);
-        }
-    });
-</script>
+    <!-- ОСНОВНОЙ СКРИПТ (модуль) -->
+    <script type="module">
+        // 1. Импорты Firebase (актуальная версия 10.13.0)
+        import { auth, db } from './js/firebase-init.js';
+        import { collection, addDoc } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+        import { onAuthStateChangedListener } from './js/auth.js';
+        import { renderHeader } from './js/ui.js';
+
+        // 2. Инициализация хедера (аватар/кнопка Войти)
+        onAuthStateChangedListener((user, userData) => {
+            if (user && userData) {
+                renderHeader(userData.role);
+            } else {
+                renderHeader(null);
+            }
+        });
+
+        // 3. Инициализация EmailJS (ваш ключ)
+        emailjs.init("pLk8dDMxLCUIVbfzP"); // оставьте свой ключ
+
+        // 4. Элементы формы
+        const form = document.getElementById('contactForm');
+        const statusDiv = document.getElementById('formStatus');
+
+        // 5. Единый обработчик отправки
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const fullname = document.getElementById('fullname').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const age = document.getElementById('age').value.trim();
+            const message = document.getElementById('message').value.trim();
+
+            if (!fullname || !email || !age || !message) {
+                statusDiv.style.display = 'block';
+                statusDiv.style.color = 'red';
+                statusDiv.textContent = 'Заполните все поля!';
+                return;
+            }
+
+            // Проверяем авторизацию
+            let userId = null;
+            const user = auth.currentUser;
+            if (user) userId = user.uid;
+
+            statusDiv.style.display = 'block';
+            statusDiv.textContent = 'Отправка...';
+            statusDiv.style.color = '#222';
+
+            try {
+                // 5a. Сохраняем заявку в Firestore (коллекция requests)
+                const requestData = {
+                    clientName: fullname,
+                    clientEmail: email,
+                    clientAge: age,
+                    message: message,
+                    status: 'pending',          // ожидает подтверждения
+                    clientId: userId,
+                    createdAt: new Date().toISOString()
+                };
+                await addDoc(collection(db, "requests"), requestData);
+                console.log('Заявка сохранена в Firestore');
+
+                // 5b. Отправляем письмо через EmailJS
+                const templateParams = {
+                    fullname: fullname,
+                    email: email,
+                    age: age,
+                    message: message
+                };
+                await emailjs.send('service_g6lpa5c', 'template_7909y7b', templateParams);
+                console.log('Письмо отправлено через EmailJS');
+
+                // Успех
+                statusDiv.style.color = 'green';
+                statusDiv.textContent = '✅ Заявка отправлена! Менеджер свяжется с вами.';
+                form.reset();
+                setTimeout(() => { statusDiv.style.display = 'none'; }, 5000);
+
+            } catch (error) {
+                console.error('Ошибка:', error);
+                statusDiv.style.color = 'red';
+                statusDiv.textContent = '❌ Ошибка при отправке. Попробуйте позже.';
+            }
+        });
+    </script>
+
 </body>
 </html>
