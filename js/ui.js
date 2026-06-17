@@ -5,12 +5,12 @@ export function renderHeader(role) {
     const authBtn = document.getElementById('authBtn');
     if (!authBtn) return;
 
-    // Удаляем старую ссылку на календарь, если есть
+    // Удаляем старую ссылку на календарь
     const oldCalendarLink = document.querySelector('.calendar-link');
     if (oldCalendarLink) oldCalendarLink.remove();
 
     if (role) {
-        // Пользователь авторизован – показываем аватар с буквой
+        // Авторизован – аватар с переходом в профиль
         const roleMap = {
             'manager': { letter: 'М', className: 'role-manager' },
             'doctor': { letter: 'В', className: 'role-doctor' },
@@ -19,17 +19,12 @@ export function renderHeader(role) {
         const info = roleMap[role];
         if (info) {
             authBtn.innerHTML = `<span class="avatar ${info.className}">${info.letter}</span>`;
-            authBtn.href = '#';
-            authBtn.onclick = async (e) => {
-                e.preventDefault();
-                await logoutUser();
-                window.location.href = 'index.html';
-            };
-            // Убираем лишние стили, если были
+            authBtn.href = 'profile.html';
+            authBtn.onclick = null; // не выходим, а переходим в профиль
             authBtn.style.padding = '0';
         }
 
-        // Добавляем ссылку на календарь в навигацию
+        // Ссылка на календарь
         const navList = document.querySelector('.nav-list');
         if (navList) {
             let calendarHref = '';
@@ -55,10 +50,10 @@ export function renderHeader(role) {
             }
         }
     } else {
-        // Гость – кнопка "Войти"
+        // Гость
         authBtn.innerHTML = 'Войти';
         authBtn.href = 'login.html';
         authBtn.onclick = null;
-        authBtn.style.padding = '8px 16px'; // возвращаем стандартный стиль
+        authBtn.style.padding = '8px 16px';
     }
 }
