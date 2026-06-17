@@ -85,81 +85,6 @@
             background: #532fb0;
         }
     </style>
-</head>
-<body>
-
-    <!-- Хедер (общий) -->
-    <header class="header">
-        <div class="container">
-            <div class="logo"><a href="index.html">Клиника MH</a></div>
-            <nav class="nav">
-                <ul class="nav-list">
-                    <li><a href="index.html">Главная</a></li>
-                    <li><a href="blog.html">Услуги</a></li>
-                    <li><a href="contact.html">Контакты</a></li>
-                    <li><a href="privacy.html">Документация</a></li>
-                </ul>
-            </nav>
-            <a href="login.html" class="subscribe-btn">Войти</a>
-        </div>
-    </header>
-
-    <section class="login-section">
-        <div class="login-container">
-            <h2 id="formTitle">Войти в аккаунт</h2>
-            <form id="authForm">
-                <div class="form-group">
-                    <input type="email" id="email" placeholder="Email" required>
-                </div>
-                <div class="form-group">
-                    <input type="password" id="password" placeholder="Пароль" required>
-                </div>
-                <!-- Доп. поля для регистрации -->
-                <div id="registerFields" style="display:none;">
-                    <div class="form-group">
-                        <input type="text" id="fullName" placeholder="Ваше полное имя (для врача — ФИО)">
-                    </div>
-                    <div class="form-group">
-                        <select id="roleSelect">
-                            <option value="client">Клиент</option>
-                            <option value="doctor">Врач</option>
-                        </select>
-                    </div>
-                </div>
-                <button type="submit" id="submitBtn">Войти</button>
-            </form>
-            <p id="toggleMode">
-                <span id="toggleText">Нет аккаунта?</span>
-                <a href="#" id="toggleLink">Создать аккаунт</a>
-            </p>
-            <p id="message"></p>
-            <!-- Кнопка для менеджера (отправить пароль) -->
-            <div id="managerSection" style="display:none;">
-                <button id="sendManagerPasswordBtn">Отправить пароль менеджеру</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- Футер (общий) -->
-    <footer class="footer2">
-        <div class="footer2-subscribe">
-            <p class="footer2-subscribe-text">Оставьте свои данные для обратной связи по любому вопросу</p>
-            <form class="footer2-subscribe-form">
-                <input type="email" placeholder="Enter Your Email" required>
-                <button type="submit">Отправить</button>
-            </form>
-        </div>
-        <div class="footer2-bottom">
-            <div class="footer2-info">Савульский переулок д.10<br>clinik_MH@finsweet.com 020 7993 2905</div>
-            <div class="footer2-socials">
-                <a href="#"><img src="photo/social/Negative.png" alt="Facebook"></a>
-                <a href="#"><img src="photo/social/Negative_2.png" alt="Twitter"></a>
-                <a href="#"><img src="photo/social/Negative_3.png" alt="Instagram"></a>
-                <a href="#"><img src="photo/social/Vector.png" alt="LinkedIn"></a>
-            </div>
-        </div>
-    </footer>
-
     <script type="module">
         import { registerUser, loginUser } from './js/auth.js';
         import { sendManagerPassword } from './js/manager.js';
@@ -245,5 +170,81 @@
 
         setMode(mode);
     </script>
+</head>
+<body>
+
+    <!-- Хедер (общий) -->
+    <header class="header">
+        <div class="container">
+            <div class="logo"><a href="index.html">Клиника MH</a></div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li><a href="index.html">Главная</a></li>
+                    <li><a href="blog.html">Услуги</a></li>
+                    <li><a href="contact.html">Контакты</a></li>
+                    <li><a href="privacy.html">Документация</a></li>
+                </ul>
+            </nav>
+            <a href="login.html" class="subscribe-btn">Войти</a>
+        </div>
+    </header>
+
+    <section class="login-section">
+        <div class="login-container">
+            <h2 id="formTitle">Войти в аккаунт</h2>
+            <form id="authForm">
+                <div class="form-group">
+                    <input type="email" id="email" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" placeholder="Пароль" required>
+                </div>
+                <!-- Доп. поля для регистрации -->
+                <div id="registerFields" style="display:none;">
+                    <div class="form-group">
+                        <input type="text" id="fullName" placeholder="Ваше полное имя (для врача — ФИО)">
+                    </div>
+                    <div class="form-group">
+                        <select id="roleSelect">
+                            <option value="client">Клиент</option>
+                            <option value="doctor">Врач</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" id="submitBtn">Войти</button>
+            </form>
+            <p id="toggleMode">
+                <span id="toggleText">Нет аккаунта?</span>
+                <a href="#" id="toggleLink">Создать аккаунт</a>
+            </p>
+            <p id="message"></p>
+            <!-- Кнопка для менеджера (отправить пароль) -->
+            <div id="managerSection" style="display:none;">
+                <button id="sendManagerPasswordBtn">Отправить пароль менеджеру</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Футер (общий) -->
+    <footer class="footer2">
+        <div class="footer2-subscribe">
+            <p class="footer2-subscribe-text">Оставьте свои данные для обратной связи по любому вопросу</p>
+            <form class="footer2-subscribe-form">
+                <input type="email" placeholder="Enter Your Email" required>
+                <button type="submit">Отправить</button>
+            </form>
+        </div>
+        <div class="footer2-bottom">
+            <div class="footer2-info">Савульский переулок д.10<br>clinik_MH@finsweet.com 020 7993 2905</div>
+            <div class="footer2-socials">
+                <a href="#"><img src="photo/social/Negative.png" alt="Facebook"></a>
+                <a href="#"><img src="photo/social/Negative_2.png" alt="Twitter"></a>
+                <a href="#"><img src="photo/social/Negative_3.png" alt="Instagram"></a>
+                <a href="#"><img src="photo/social/Vector.png" alt="LinkedIn"></a>
+            </div>
+        </div>
+    </footer>
+
+    
 </body>
 </html>
